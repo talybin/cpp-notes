@@ -50,15 +50,12 @@ void naive_do_care(const Args&... args)
 // Ok! Require that all used arguments specified.
 // No check for other types except duplicates.
 template <typename... Args>
-void tuple_do_care(Args&&... args)
+void tuple_do_care(const Args&... args)
 {
-    // Copy/Move passed arguments. To avoid localy store
-    // arguments use std::forward_as_tuple and decay
-    // std::get. See tuple2_do_care().
-    auto tuple_args = std::make_tuple(std::forward<Args>(args)...);
+    std::tuple<const Args&...> tuple_args(args...);
 
-    std::cout << std::get<std::string_view>(tuple_args)
-              << " number is " << std::get<int>(tuple_args) << '\n';
+    std::cout << std::get<const std::string_view&>(tuple_args)
+              << " number is " << std::get<const int&>(tuple_args) << '\n';
 }
 
 
@@ -70,15 +67,11 @@ void tuple2_do_care(Args&&... args)
     // Accepted args with default values
     std::tuple<std::string_view, int> needed_args;
 
-    // Argument references passed to this functions
-    auto tuple_args = std::forward_as_tuple(std::forward<Args>(args)...);
-
     // Copy/Move passed arguments
-    auto set = [&needed_args](auto&& arg) {
-        using T = decltype(arg);
+    auto set = [&needed_args]<typename T>(T&& arg) {
         std::get<std::decay_t<T>>(needed_args) = std::forward<T>(arg);
     };
-    (set(std::get<Args>(tuple_args)), ...);
+    (set(std::forward<Args>(args)), ...);
 
     // Print
     std::cout << std::get<std::string_view>(needed_args)
@@ -124,9 +117,8 @@ int main()
     // Best solution would of course be to not use
     // named arguments for clarity and speed of
     // the code. But you already know it, right? :)
-    // Since we still talking about named args,
+    // Still, since we talking about named args,
     // maybe less painfull would be:
-    //
-    // tuple2_do_care(a_name("best"));
+    tuple2_do_care(a_name("best"));
 }
 
