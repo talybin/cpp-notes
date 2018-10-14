@@ -63,7 +63,7 @@ void tuple_do_care(Args&&... args)
 
 
 // Better one! Has default values, don't require all arguments and
-// reject types not listed in "needed_args".
+// detect types not listed in "needed_args".
 template <typename... Args>
 void tuple2_do_care(Args&&... args)
 {
@@ -121,7 +121,12 @@ int main()
     // Prefered way for named arguments
     tuple2_do_care(a_name() = "prefered");
 
-    // But best ofcourse is to the traditional way!
+    // Best solution would of course be to not use
+    // named arguments for clarity and speed of
+    // the code. But you already know it, right? :)
+    // Since we still talking about named args,
+    // maybe less painfull would be:
+    //
     // tuple2_do_care(a_name("best"));
 }
 
