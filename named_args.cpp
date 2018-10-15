@@ -26,9 +26,9 @@ void dont_care(const Args&...)
 }
 
 
-// Naive way of argument extract.
+// Using if constexpr
 template <typename... Args>
-void naive_do_care(const Args&... args)
+void if_constexpr_read_args(const Args&... args)
 {
     std::string_view name_arg;
     int value_arg = 0;
@@ -47,10 +47,10 @@ void naive_do_care(const Args&... args)
 }
 
 
-// Ok! Require that all used arguments specified.
+// Require that all used arguments specified.
 // No check for other types except duplicates.
 template <typename... Args>
-void tuple_do_care(const Args&... args)
+void tuple_required_all(const Args&... args)
 {
     std::tuple<const Args&...> tuple_args(args...);
 
@@ -59,10 +59,10 @@ void tuple_do_care(const Args&... args)
 }
 
 
-// Better one! Has default values, don't require all arguments and
+// Has default values, don't require all arguments and
 // detect types not listed in "needed_args".
 template <typename... Args>
-void tuple2_do_care(Args&&... args)
+void tuple_optional_args(Args&&... args)
 {
     // Accepted args with default values
     std::tuple<std::string_view, int> needed_args;
@@ -96,29 +96,29 @@ int main()
 
     std::cout << "--- Solution 2:\n";
 
-    naive_do_care(name = "naive", value = 2);
-    naive_do_care(value = 2, name = "naive");
+    if_constexpr_read_args(name = "if_constexpr_read_args", value = 2);
+    if_constexpr_read_args(value = 2, name = "if_constexpr_read_args");
 
     std::cout << "--- Solution 3:\n";
 
-    tuple_do_care(name = "tuple", value = 3);
-    tuple_do_care(value = 3, name = "tuple");
+    tuple_required_all(name = "tuple_required_all", value = 3);
+    tuple_required_all(value = 3, name = "tuple_required_all");
 
     std::cout << "--- Solution 4:\n";
 
-    tuple2_do_care(name = "tuple", value = 4);
-    tuple2_do_care(value = 4, name = "tuple");
+    tuple_optional_args(name = "tuple_optional_args", value = 4);
+    tuple_optional_args(value = 4, name = "tuple_optional_args");
 
     using a_name = std::string_view;
 
     // Prefered way for named arguments
-    tuple2_do_care(a_name() = "prefered");
+    tuple_optional_args(a_name() = "prefered");
 
     // Best solution would of course be to not use
     // named arguments for clarity and speed of
     // the code. But you already know it, right? :)
     // Still, since we talking about named args,
-    // maybe less painfull would be:
-    tuple2_do_care(a_name("best"));
+    // I guess less painfull would be:
+    tuple_optional_args(a_name("best"));
 }
 
