@@ -37,6 +37,10 @@ struct lambda_traits : lambda_traits<decltype(&F::operator())>
 { };
 
 template <typename F, typename R, typename... Args>
+struct lambda_traits<R(F::*)(Args...)> : lambda_traits<R(F::*)(Args...) const>
+{ };
+
+template <typename F, typename R, typename... Args>
 struct lambda_traits<R(F::*)(Args...) const> {
     using pointer = std::add_pointer_t<R(Args...)>;
 
