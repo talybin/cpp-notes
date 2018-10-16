@@ -60,7 +60,7 @@ void tuple_required_all(const Args&... args)
 
 
 // Has default values, don't require all arguments and
-// detect types not listed in "needed_args".
+// detect types not listed in "tuple_args".
 template <typename... Args>
 void tuple_optional_args(Args&&... args)
 {
