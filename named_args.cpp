@@ -65,17 +65,14 @@ template <typename... Args>
 void tuple_optional_args(Args&&... args)
 {
     // Accepted args with default values
-    std::tuple<std::string_view, int> needed_args;
+    std::tuple<std::string_view, int> tuple_args;
 
     // Copy/Move passed arguments
-    auto set = [&needed_args]<typename T>(T&& arg) {
-        std::get<std::decay_t<T>>(needed_args) = std::forward<T>(arg);
-    };
-    (set(std::forward<Args>(args)), ...);
+    (void(std::get<std::decay_t<Args>>(tuple_args) = std::forward<Args>(args)), ...);
 
     // Print
-    std::cout << std::get<std::string_view>(needed_args)
-              << " number is " << std::get<int>(needed_args) << '\n';
+    std::cout << std::get<std::string_view>(tuple_args)
+              << " number is " << std::get<int>(tuple_args) << '\n';
 }
 
 
