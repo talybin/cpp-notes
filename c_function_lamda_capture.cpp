@@ -20,7 +20,7 @@
 // ------------------------------------------------------------
 template <typename F>
 auto cify_no_args(F&& f) {
-    static F fn = std::forward<F>(f);
+    static F& fn = f;
     return [] {
         return fn();
     };
@@ -45,7 +45,7 @@ struct lambda_traits<R(F::*)(Args...) const> {
     using pointer = std::add_pointer_t<R(Args...)>;
 
     static pointer cify(F&& f) {
-        static F fn = std::forward<F>(f);
+        static F& fn = f;
         return [](Args... args) {
             return fn(std::forward<Args>(args)...);
         };
