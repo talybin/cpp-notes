@@ -5,7 +5,7 @@
 
 // Primary template
 template <class F, template <class...> class C>
-struct args_of : args_of<typename std::remove_pointer<F>::type, C> { };
+struct args_of : args_of<std::remove_pointer_t<std::remove_reference_t<F>>, C> { };
 
 // Specialization for member functions
 template<class T, class F, template <class...> class C>
