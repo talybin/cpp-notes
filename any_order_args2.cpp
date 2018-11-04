@@ -6,6 +6,13 @@
 
 struct none_type { };
 
+template <class T>
+using is_none = std::is_same<T, none_type>;
+
+template <class T>
+constexpr bool is_none_v = is_none<T>::value;
+
+
 
 template <class L, class T>
 struct find_decay;
@@ -27,34 +34,29 @@ struct find_decay<L<>, T> {
 };
 
 
-template <class T>
-using is_none = std::is_same<T, none_type>;
-
-template <class T>
-constexpr bool is_none_v = is_none<T>::value;
-
 
 template <class... T>
 struct opt_invoker
 {
-    // If FnArg not in ArgsTuple (value not provided) return decay type of FnArg
-    template <class FnArg, class ArgsTuple, class ArgType = find_decay_t<ArgsTuple, FnArg>>
-    std::enable_if_t<is_none_v<ArgType>, std::decay_t<FnArg>>
-    get_or(ArgsTuple&) {
-        return { };
-    }
-
-    // If FnArg in ArgsTuple (value is provided) return Type and Value of ArgsTuple
-    template <class FnArg, class ArgsTuple, class ArgType = find_decay_t<ArgsTuple, FnArg>>
-    std::enable_if_t<not is_none_v<ArgType>, ArgType>
-    get_or(ArgsTuple& args) {
-        return std::get<ArgType>(args);
+    template <class FnArg, class ArgsTuple>
+    decltype(auto) get_value(ArgsTuple& args)
+    {
+        using ArgType = find_decay_t<ArgsTuple, FnArg>;
+        if constexpr (is_none_v<ArgType>)
+            // Required arg not provided, create a default one
+            return std::decay_t<FnArg> { };
+        else
+            return std::forward<ArgType>(std::get<ArgType>(args));
     }
 
     template <class F, class... Args>
-    decltype(auto) operator()(F&& f, Args&&...args) {
+    decltype(auto) operator()(F&& f, Args&&...args)
+    {
+        // TODO check F contains unique arg types
+        // TODO check all Args are in T...
+
         std::tuple<Args...> targs(std::forward<Args>(args)...);
-        return f(get_or<T>(targs)...);
+        return f(get_value<T>(targs)...);
     }
 };
 
@@ -79,12 +81,14 @@ void processing_fn(int& i, const std::string& s, other_struct os)
     i += 2;
 }
 
+/* Move this above opt_invoker and change "return f(...)" to "return test_args(...)"
 template <class... Args>
 void test_args(Args&&...)
 {
     using targs = std::tuple<Args...>;
     static_assert(std::is_same_v<targs, std::tuple<int&, std::string, other_struct>>);
 }
+*/
 
 
 int main()
