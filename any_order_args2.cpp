@@ -28,7 +28,7 @@ struct find_decay<L<>, T> {
 
 
 template <class T>
-struct is_none : std::is_same<T, none_type> { };
+using is_none = std::is_same<T, none_type>;
 
 template <class T>
 constexpr bool is_none_v = is_none<T>::value;
@@ -80,10 +80,10 @@ void processing_fn(int& i, const std::string& s, other_struct os)
 }
 
 template <class... Args>
-void test_args(Args&&... args)
+void test_args(Args&&...)
 {
     using targs = std::tuple<Args...>;
-    static_assert(std::is_same_v<targs, std::tuple<const int&, std::string, other_struct>>);
+    static_assert(std::is_same_v<targs, std::tuple<int&, std::string, other_struct>>);
 }
 
 
