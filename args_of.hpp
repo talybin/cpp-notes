@@ -22,6 +22,32 @@ struct args_of<R(A...) volatile, C> : args_of<R(A...), C> { };
 template <class R, class... A, template <class...> class C>
 struct args_of<R(A...) const volatile, C> : args_of<R(A...), C> { };
 
+// Specialization for function types that have ref-qualifiers
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) &, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const &, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) volatile &, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const volatile &, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) &&, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const &&, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) volatile &&, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const volatile &&, C> : args_of<R(A...), C> { };
+
 // Specializations for noexcept versions of all the above (C++17 and later)
 #if (__cplusplus >= 201703L)
 
@@ -36,6 +62,30 @@ struct args_of<R(A...) volatile noexcept, C> : args_of<R(A...), C> { };
 
 template <class R, class... A, template <class...> class C>
 struct args_of<R(A...) const volatile noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) & noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const & noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) volatile & noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const volatile & noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) && noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const && noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) volatile && noexcept, C> : args_of<R(A...), C> { };
+
+template <class R, class... A, template <class...> class C>
+struct args_of<R(A...) const volatile && noexcept, C> : args_of<R(A...), C> { };
 
 #endif
 
