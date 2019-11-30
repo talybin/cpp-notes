@@ -1,17 +1,2 @@
 # cpp-notes
-Interesting code snippets
-
-#### Make function take arguments in any order
-```sh
-g++ -std=c++17 any_order_args.cpp
-```
-
-#### Python like named arguments
-```sh
-g++ -std=c++17 named_args.cpp
-```
-
-#### Lambda with capture as a function pointer (C function)
-```sh
-g++ -std=c++14 c_function_lamda_capture.cpp
-```
+I using gists as my C++ notes now at https://gist.github.com/talybin
